@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Виртуальное окружение
+venv/
+Pipfile.lock
+poetry.lock
+
+# Базы данных
+db.sqlite3
+*.sqlite3
+
+# Логи и временные файлы
+*.log
+*.bak
+
+# Настройки (пароли, API-ключи)
+.env
+.env.*
+
+# Django файлы
+staticfiles/
+media/
+
+# IDE и редакторы
+.vscode/
+.idea/
+
+# Docker
+*.dockerignore
+docker-compose.override.yml
