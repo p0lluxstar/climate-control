@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Climae Control</h1>
+    {% if data_all %}
+    {% for data in data_all %}
+        <div>
+            <p>Дата:{{ data.created_at }} Температура:{{ data.temperature }} Влажность:{{ data.humidity }}</p>
+        </div>
+    {% endfor %}
+    {% else %}
+        <p>Данных нет</p>
+    {% endif %}
+</body>
+</html>

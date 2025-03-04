@@ -7,5 +7,5 @@ class ClimateData(models.Model):
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Date")
 
     def __str__(self):
-        return f"{self.timestamp}: {self.temperature}°C, {self.humidity}%"
+        return f"{self.created_at}: {self.temperature}°C, {self.humidity}%"
 
