@@ -9,7 +9,6 @@ def fetch_and_store_data():
         try:
             response = requests.get("http://127.0.0.1:5000/data", timeout=5)
             response.raise_for_status()
-            print(response.raise_for_status)
 
             data = response.json()
             print(data)
@@ -28,7 +27,7 @@ def fetch_and_store_data():
         except requests.RequestException as e:
             print(f"Ошибка при получении данных: {e}")
 
-        time.sleep(500)  # Пауза в 10 секунд
+        time.sleep(30)  # Пауза в 10 секунд
 
 # Запускаем функцию в отдельном потоке
 

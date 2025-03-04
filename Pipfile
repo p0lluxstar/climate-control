@@ -8,6 +8,7 @@ django = "==4.2"
 flask = "*"
 requests = "*"
 apscheduler = "*"
+plotly = "*"
 
 [dev-packages]
 
