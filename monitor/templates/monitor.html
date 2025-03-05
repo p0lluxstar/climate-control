@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Control</title>
+    {% comment %} <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> {% endcomment %}
+    <script src="{% static 'js/plotly-3.0.1.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+    <div class="header">
+        <h1>Climate Control</h1>
+    </div>
+    <div class="main">
+        <div class="data-container">
+            <div class="loader"></div>
+            
+            {% comment %} {% if data_all %}
+                <div id="data-container">
+                    <p>Дата: <span id="date">{{ data_all.last.created_at }}</span> | 
+                    Температура: <span id="temperature">{{ data_all.last.temperature }}</span>°C | 
+                    Влажность: <span id="humidity">{{ data_all.last.humidity }}</span>%</p>
+                </div>
+            {% else %}
+                <p>Данных нет</p>
+            {% endif %} {% endcomment %}
+        </div>
+    
+        <!-- Блок для графика -->
+        {% comment %} <div id="graph-container">{{ graph_html|safe }}</div> {% endcomment %}
+        <div class="graph-container"></div>
+    </div>
+    
+    <script>
+        // Функция для обновления данных и графика
+
+        function updateData() {
+            const dataContainer = document.querySelector('.data-container');
+
+            fetch('/api/all')  // Отправляем запрос на сервер
+                .then(response => response.json())  // Преобразуем ответ в JSON
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        console.error('Нет данных');
+                        return;
+                    }
+
+                    // Обновляем данные на странице
+                    dataContainer.innerHTML = `
+                        <div class="date">Дата: ${data[data.length - 1].created_at}</div>
+                        <div class="temperature">Температура сейчас: ${data[data.length - 1].temperature}°C</div>
+                        <div class="humidity">Влажность сейчас: ${data[data.length - 1].humidity}%</div>
+                    `
+                    // Обновляем график
+                    const graphContainer = document.querySelector('.graph-container');
+                    const dates = data.map(item => item.created_at);
+                    const temperatures = data.map(item => item.temperature);
+                    const humidities = data.map(item => item.humidity);
+
+                    Plotly.react(graphContainer, [
+                    { 
+                        x: dates, 
+                        y: humidities, 
+                        name: 'Влажность (%)', 
+                        line: { color: '#319fea' }, 
+                        mode: 'lines+markers+text', 
+                        text: humidities.map(h => `${h}%`), 
+                        hoverinfo: 'none', 
+                        textposition: 'top'
+                    },
+                    { 
+                        x: dates, 
+                        y: temperatures, 
+                        name: 'Температура (°C)', 
+                        line: { color: '#f65f80' }, 
+                        mode: 'lines+markers+text',  // Линии + точки
+                        text: temperatures.map(t => `${t}°C`), // Подписи значений
+                        hoverinfo: 'none',  // Показать дату, значение и подпись при наведении
+                        textposition: 'top' // Позиция текста
+                    },
+                    ], {
+                        title: {
+                            text: 'Температура и влажность',
+                            font: {
+                                size: 20,
+                                color: '#333',
+                                weight: 'bold'
+                            }
+                        },
+                        xaxis: {
+                            title: {
+                                text: 'Дата и время',
+                                font: {
+                                    size: 14,
+                                    color: '#333',
+                                    weight: 'bold'
+                                }
+                            },
+                            fixedrange: true
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Значение',
+                                font: {
+                                    size: 14,
+                                    color: '#333',
+                                    weight: 'bold'
+                                }
+                            },
+                            fixedrange: true,
+                            range: [10, 80], 
+                            dtick: 20
+                        },
+                        legend: { 
+                            x: 1, 
+                            y: 2,
+                            xanchor: 'right',
+                            yanchor: 'top', 
+                            clickable: false,
+                            font: {
+                                family: 'Arial, sans-serif',
+                                size: 12,
+                                color: '#333'
+                            },
+                            bgcolor: 'rgba(247, 247, 247, 0.5)'
+                        },
+                        dragmode: 'false',
+                        plot_bgcolor: 'rgba(247, 247, 247, 0.5)',  // Полупрозрачный фон графика
+                        paper_bgcolor: 'rgba(255, 255, 255, 0.5)', // Полупрозрачный фон области графика
+                    }, {
+                        displayModeBar: false,  // Отключаем панель инструментов
+                        legendItemClick: false,  // Отключает клики по легенде
+                        legendItemDoubleClick: false // Отключает двойной клик по легенде
+                    });
+                })
+                .catch(error => console.error('Ошибка:', error));
+        }
+
+        setTimeout(updateData, 1000);
+        setInterval(updateData, 50000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+body{
+    font-family: Open Sans, sans-serif;
+    padding: 0 40px;
+    background-image: url('../img/bg.jpg');
+    color: #19191c;
+}
+
+.header{
+    color:#ef4704;
+    border-bottom: 1px solid #c5c5c5;
+}
+
+.main{
+    padding-top: 20px;
+}
+
+.data-container{
+    display: flex;
+    flex-direction: column;
+    gap:15px;
+    margin-bottom: 20px;
+}
+
+.date,
+.temperature,
+.humidity{
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.date::before,
+.temperature::before,
+.humidity::before {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+    margin-right: 5px;
+}
+
+.date::before {
+    background-image: url('../img/icon-date.svg');
+}
+
+.temperature::before {
+    background-image: url('../img/icon-temperature.svg');
+}
+
+.humidity::before {
+    background-image: url('../img/icon-humidity.svg');
+}
+
+.loader {
+    margin: 0 auto;
+    width: 30px;
+    height: 30px;
+    border: 6px solid #f3f4f6;
+    border-top: 6px solid #ef4704;
+    border-radius: 50%;
+    animation: infyways-loader-spin 1000ms linear infinite;
+  }
+
+@keyframes infyways-loader-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* для графика */
+
+.main-svg {
+    border-radius: 10px;
+}

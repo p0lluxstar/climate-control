@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 
 import os
 from django.core.wsgi import get_wsgi_application
-# from display.fetch_and_store_data import fetch_and_store_data
+# from monitor.fetch_and_store_data import fetch_and_store_data
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')
 
