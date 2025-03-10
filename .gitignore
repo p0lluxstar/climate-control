@@ -31,3 +31,6 @@ media/
 # Docker
 *.dockerignore
 docker-compose.override.yml
+
+# node
+node_modules
