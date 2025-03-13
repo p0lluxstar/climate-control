@@ -1,9 +1,11 @@
 import random
 from flask import Flask, jsonify
+from flask_cors import CORS 
 
 # Создаем экземпляр приложения Flask
 ws = Flask(__name__)
 
+CORS(ws, origins=["http://127.0.0.1:8000"])
 
 # Определяем маршрут (route) для запросов
 @ws.route('/data', methods=['GET'])
