@@ -1,14 +1,20 @@
+import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from monitor.models import ClimateData
 import requests
+from django.core.mail import send_mail
+from django.conf import settings
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Функция, которая будет выполняться по расписанию
 
 
-def print_server_status():
+def getDataSensor():
     # print('запись в бд')
     try:
-        response = requests.get("http://127.0.0.1:5000/data", timeout=5)
+        response = requests.get(os.getenv('WS_DATA_URL'), timeout=5)
         response.raise_for_status()
 
         data = response.json()
@@ -23,6 +29,18 @@ def print_server_status():
                 humidity=humidity
             )
             print("Данные успешно сохранены в базу данных.")
+
+            # Отправка email, если температура выше 30°C
+            if temperature > 20.8:
+                send_mail(
+                    subject="Warning! High Temperature Detected",
+                    message=f"The temperature has risen above 30°C. Current temperature: {temperature}°C.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    # Укажите email получателя
+                    recipient_list=[os.getenv('EMAIL_RECIPIENT')],
+                    fail_silently=False,
+                )
+                print("Уведомление на email отправлено.")
         else:
             print("Некорректные данные, не удалось сохранить в базу.")
     except requests.RequestException as e:
@@ -33,4 +51,4 @@ def print_server_status():
 scheduler = BackgroundScheduler()
 
 # Добавление задачи в планировщик
-scheduler.add_job(print_server_status, 'interval', seconds=300)
+scheduler.add_job(getDataSensor, 'interval', seconds=300)

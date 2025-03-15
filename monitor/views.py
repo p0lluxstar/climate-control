@@ -5,6 +5,7 @@ from django.shortcuts import render
 from .models import ClimateData
 import plotly.graph_objects as go
 from django.utils.timezone import now
+from django.conf import settings
 
 
 def index(request):
@@ -43,5 +44,4 @@ def index(request):
     #     'graph_html': graph_html,
     # }
 
-    return render(request, 'monitor.html')
-
+    return render(request, 'monitor.html', {"WS_DATA_URL": settings.WS_DATA_URL})

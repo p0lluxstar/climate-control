@@ -1,13 +1,17 @@
+import os
 import time
 import threading
 import requests
 from .models import ClimateData
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def fetch_and_store_data():
     while True:
         try:
-            response = requests.get("http://127.0.0.1:5000/data", timeout=5)
+            response = requests.get(os.getenv('WS_DATA_URL'), timeout=5)
             response.raise_for_status()
 
             data = response.json()

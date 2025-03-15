@@ -1,69 +1,19 @@
-// Функция для обновления данных и графика
+// Функция для обновления графика
+const dataContainer = document.querySelector('.data-container');
 const horuBtn = document.querySelector('.hour-btn');
 const dayBtn = document.querySelector('.day-btn');
 const weekBtn = document.querySelector('.week-btn');
-const dataContainer = document.querySelector('.data-container');
+const updateGraphBtn = document.querySelector('.update-graph-btn');
+const updateInfo = document.querySelector('.update-info');
 
 document.addEventListener('DOMContentLoaded', function () {
-    horuBtn.addEventListener('click', () => updateGraphContainer('hour'));
-    dayBtn.addEventListener('click', () => updateGraphContainer('day'));
-    weekBtn.addEventListener('click', () => updateGraphContainer('week'));
-
-    // document.addEventListener('click', function (event) {
-    //     if (event.target.classList.contains('update-btn')) {
-    //         getLatestData();
-    //     }
-    // });
+    horuBtn.addEventListener('click', () => updateGraphData('hour'));
+    dayBtn.addEventListener('click', () => updateGraphData('day'));
+    weekBtn.addEventListener('click', () => updateGraphData('week'));
+    updateGraphBtn.addEventListener('click', () => updateGraphData('hour'));
 });
 
-// Функция для получения и обновления последних данных
-async function getLatestData() {
-    try {
-        const response = await fetch(`http://127.0.0.1:5000/data`);
-        const data = await response.json();
-
-        if (!data || data.length === 0) {
-            dataContainer.innerHTML = `<div class="error">No new data available.</div>`;
-            return;
-        }
-
-        const currentDate = new Date();
-        const localDate = new Date(currentDate.getTime() + 3 * 60 * 60 * 1000);
-        const formattedDate = localDate.toISOString().replace('T', ' ').slice(0, 19);
-
-        dataContainer.innerHTML = `
-            <div class="data-last">
-                <span class="title">Last sensor measurement</span>
-                <div class="date">Date and time: ${formattedDate}</div>
-                  <div class="humidity">Humidity is now:<span>${data.humidity}%</span></div>
-                <div class="temperature">Temperature is now:<span>${data.temperature}°C</span></div>
-            </div>
-        `;
-
-        console.log('Updated data:', data);
-    } catch (error) {
-        console.error('Ошибка при получении данных:', error);
-    }
-}
-
-setTimeout(getLatestData, 1000);
-setInterval(getLatestData, 1000);
-
-async function updateDataContainer() {
-    try {
-        const response = await fetch(`api/latest`);
-        const data = await response.json();
-
-        if (!data || data.length === 0) {
-            dataContainer.innerHTML = `<div class="error">There is no data for the selected period.</div>`;
-            return;
-        }
-    } catch (error) {
-        console.error('Ошибка при получении данных:', error);
-    }
-}
-
-async function updateGraphContainer(interval = 'hour') {
+export async function updateGraphData(interval = 'hour') {
     const graphContainer = document.querySelector('.graph-container');
     const graph = document.querySelector('.graph');
     const buttons = document.querySelector('.buttons');
@@ -73,6 +23,8 @@ async function updateGraphContainer(interval = 'hour') {
     dayBtn.classList.toggle('active', interval === 'day');
     weekBtn.classList.toggle('active', interval === 'week');
 
+    updateInfo.innerHTML = `Autoupdated every 5 min.`;
+
     const url = `/api/${interval}`;
 
     try {
@@ -80,7 +32,8 @@ async function updateGraphContainer(interval = 'hour') {
         const data = await response.json();
 
         graph.innerHTML = ``;
-        buttons.style.display = 'block';
+        buttons.style.display = 'flex';
+        buttons.style.gap = '7px';
         buttons.style.position = 'absolute';
         buttons.style.background = 'none';
 
@@ -149,8 +102,8 @@ async function updateGraphContainer(interval = 'hour') {
                 yaxis: {
                     title: { text: 'Meaning', font: { size: 14, color: '#333', weight: 'bold' } },
                     fixedrange: true,
-                    range: [10, 80],
-                    tickvals: [20, 30, 40, 50, 60, 70],
+                    range: [10, 70],
+                    tickvals: [20, 30, 40, 50, 60],
                     dtick: 10,
                 },
                 legend: {
@@ -176,6 +129,3 @@ async function updateGraphContainer(interval = 'hour') {
         console.error('Ошибка при получении данных:', error);
     }
 }
-
-setTimeout(updateGraphContainer, 1000);
-setInterval(updateGraphContainer, 300000);

@@ -1,19 +1,25 @@
+import os
 import random
 from flask import Flask, jsonify
-from flask_cors import CORS 
+from flask_cors import CORS
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Создаем экземпляр приложения Flask
 ws = Flask(__name__)
 
-CORS(ws, origins=["http://127.0.0.1:8000"])
+CORS(ws, origins=[os.getenv('FRONTEND_URL')])
 
 # Определяем маршрут (route) для запросов
+
+
 @ws.route('/data', methods=['GET'])
 def get_data():
 
-    temperature = round(random.uniform(30, 35), 1)
+    temperature = round(random.uniform(20, 21), 1)
 
-    humidity = round(random.uniform(60, 70), 1)
+    humidity = round(random.uniform(50, 51), 1)
 
     data = {
         'temperature': temperature,

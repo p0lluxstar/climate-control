@@ -10,6 +10,7 @@ requests = "*"
 apscheduler = "*"
 plotly = "*"
 flask-cors = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

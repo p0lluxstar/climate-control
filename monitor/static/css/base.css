@@ -1,6 +1,6 @@
 body{
     font-family: Open Sans, sans-serif;
-    padding: 0 40px;
+    padding: 0 40px 40px;
     background-image: url('../img/bg.jpg');
     color: #19191c;
 }
@@ -12,11 +12,6 @@ body{
 
 .main{
     padding-top: 20px;
-}
-
-.data-container{
-    
-  
 }
 
 .data-last{
@@ -31,10 +26,12 @@ body{
     width: 400px;
 }
 
-.data-last .title{
+.title-container{
+    display: flex;
+    justify-content: right;
+    align-items: center;
     position: absolute;
     text-align: right;
-    display: block;
     width: 100%;
     font-size: 10px;
     top: 5px;
@@ -42,6 +39,9 @@ body{
     color: #747474;
 }
 
+.title {
+    margin-right: 5px;
+}
 
 .date,
 .temperature,
@@ -61,6 +61,12 @@ body{
     height: 40px;
     background-size: cover;
     margin-right: 10px;
+}
+
+.countdown{
+    display: inline-block;
+    width: 5px;
+    margin-right: 5px;
 }
 
 .date::before {
@@ -83,21 +89,6 @@ body{
 .temperature span {
     color: #f65f80;
     margin-left: 5px;
-}
-
-.loader {
-    margin: 0 auto;
-    width: 30px;
-    height: 30px;
-    border: 6px solid #f3f4f6;
-    border-top: 6px solid #ef4704;
-    border-radius: 50%;
-    animation: infyways-loader-spin 1000ms linear infinite;
-  }
-
-@keyframes infyways-loader-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 .graph-container{
@@ -123,7 +114,6 @@ body{
     padding: 5px 10px;
     font-weight: bold;
     border-radius: 5px;
-    margin-right: 5px;
 }
 
 .buttons button:hover{
@@ -137,6 +127,96 @@ body{
     cursor: default;
 }
 
+.hour-btn-container {
+    display: flex;
+}
+
+button.hour-btn  {
+    border-radius: 5px 0px 0px 5px;
+}
+
+button.update-graph-btn{
+    border-radius: 0px 5px 5px 0px;
+    border-left: 1px solid #b5c3d9;
+}
+
+.update-info{
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    font-size: 10px;
+    color: #747474;
+}
+
+/*loader*/
+.loader {
+    margin: 0 auto;
+    width: 30px;
+    height: 30px;
+    border: 6px solid #f3f4f6;
+    border-top: 6px solid #ef4704;
+    border-radius: 50%;
+    animation: infyways-loader-spin 1000ms linear infinite;
+  }
+
+@keyframes infyways-loader-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/*progress-loader*/
+.progress-loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: conic-gradient(#f08155 0%, #e0e0e0 0%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-loader::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e9f1fb;
+}
+
+.progress {
+    position: absolute;
+    font-size: 14px;
+    color: #f08155;
+}
+
+/*progress-loader*/
+.progress-graph-loader {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: conic-gradient(#f08155 0%, #e0e0e0 0%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-graph-loader::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e9f1fb;
+}
+
+.graph-progress {
+    position: absolute;
+    font-size: 14px;
+    color: #f08155;
+}
 
 /* для графика */
 

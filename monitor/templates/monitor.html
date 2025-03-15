@@ -5,12 +5,10 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Climate Control</title>
-        {% comment %}
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        {% endcomment %}
         <script src="{% static 'js/plotly-3.0.1.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+        <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
     </head>
     <body>
         <div class="header">
@@ -34,19 +32,31 @@
             </div>
 
             <!-- Блок для графика -->
+
             <div class="graph-container">
                 <div class="buttons">
-                    <button class="hour-btn">1 hour</button>
+                    <div class="hour-btn-container">
+                        <button class="hour-btn">1 hour</button>
+                        <button class="update-graph-btn">↻</button>
+                    </div>
                     <button class="day-btn">24 hours</button>
                     <button class="week-btn">1 week</button>
                 </div>
+                {% comment %}
+                <div class="progress-loader-graph">update</div>
+                {% endcomment %}
                 <div class="graph"></div>
+                <div class="update-info"></div>
             </div>
+
             {% comment %}
             <div id="graph-container">{{ graph_html|safe }}</div>
             {% endcomment %}
         </div>
 
-        <script src="{% static 'js/chart.js' %}"></script>
+        <script>
+            const WS_DATA_URL = '{{ WS_DATA_URL }}';
+        </script>
+        <script type="module" src="{% static 'js/main.js' %}"></script>
     </body>
 </html>
