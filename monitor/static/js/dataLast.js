@@ -33,6 +33,7 @@ export async function updateLastData() {
         startProgressLoader();
     } catch (error) {
         console.error('Ошибка при получении данных:', error);
+        dataContainer.innerHTML = `Ошибка при получении данных`;
     }
 }
 

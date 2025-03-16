@@ -31,4 +31,4 @@ def get_data():
 
 # Запуск сервера
 if __name__ == '__main__':
-    ws.run(debug=True)
+    ws.run(host="0.0.0.0", debug=True)
