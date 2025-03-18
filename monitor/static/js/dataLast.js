@@ -1,7 +1,17 @@
+import { startProgressLoader } from './startProgressLoader.js';
+
+const dataContainer = document.querySelector('.data-container');
+const dataLast = document.querySelector('.data-last');
+const loader = document.querySelector('.loader');
+const currentFormattedDate = document.querySelector('.current-formatted-date');
+const currentHumidity = document.querySelector('.current-humidity');
+const currentTemperature = document.querySelector('.current-temperature');
+const progressLastLoader = document.querySelector('.progress-last-loader');
+
 // Функция для получения и обновления последних данных
 export async function updateLastData() {
-    const dataContainer = document.querySelector('.data-container');
-
+    loader.style.display = 'none';
+    
     try {
         const response = await fetch(WS_DATA_URL);
         const data = await response.json();
@@ -15,51 +25,14 @@ export async function updateLastData() {
         const localDate = new Date(currentDate.getTime() + 3 * 60 * 60 * 1000);
         const formattedDate = localDate.toISOString().replace('T', ' ').slice(0, 19);
 
-        dataContainer.innerHTML = `
-            <div class="data-last">
-                <div class="title-container">
-                    <div class="title">Last sensor measurement</div>
-                    <div class="progress-loader">
-                        <div class="progress"></div>
-                    </div>
-                </div>    
-                <div class="date">Date and time: ${formattedDate}</div>
-                <div class="humidity">Current humidity:<span>${data.humidity}%</span></div>
-                <div class="temperature">Current temperature:<span>${data.temperature}°C</span></div>
-            </div>
-        `;
+        dataLast.style.display = 'flex';
+        currentFormattedDate.innerHTML = `${formattedDate}`;
+        currentHumidity.innerHTML = ` ${data.humidity}%`;
+        currentTemperature.innerHTML = ` ${data.temperature}°C`;
 
-        // Запускаем прогресс-лоадер
-        startProgressLoader();
+        startProgressLoader(updateLastData, progressLastLoader, 3000);
     } catch (error) {
-        console.error('Ошибка при получении данных:', error);
-        dataContainer.innerHTML = `Ошибка при получении данных`;
+        console.error('Error when receiving data:', error);
+        dataContainer.innerHTML = `Error when receiving data.`;
     }
-}
-
-// Функция для запуска прогресс-лоадера
-export function startProgressLoader() {
-    const progressLoader = document.querySelector('.progress-loader');
-    // const progressText = document.querySelector('.progress');
-
-    const totalTime = 3000; // Время одного цикла в миллисекундах (30 секунд)
-    let startTime = Date.now();
-
-    function updateProgress() {
-        const currentTime = Date.now();
-        const elapsedTime = currentTime - startTime;
-        const progress = (elapsedTime / totalTime) * 100;
-
-        progressLoader.style.background = `conic-gradient(#f08155 ${progress}%, #e0e0e0 ${progress}%)`;
-        // progressText.textContent = `${Math.round(progress)}%`;
-
-        if (progress < 100) {
-            requestAnimationFrame(updateProgress); // Продолжаем анимацию
-        } else {
-            // Когда прогресс достигает 100%, отправляем новый запрос и обновляем данные
-            updateLastData();
-        }
-    }
-
-    requestAnimationFrame(updateProgress); // Запускаем анимацию
 }

@@ -9,5 +9,4 @@ setTimeout(() => {
 // Запускаем обновление данных в блоке chart
 setTimeout(() => {
     updateGraphData();
-    setInterval(updateGraphData, 300000);
 }, 1000);

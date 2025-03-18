@@ -14,8 +14,12 @@ body{
     padding-top: 20px;
 }
 
+.data-container{
+    min-height: 40px;
+}
+
 .data-last{
-    display: flex; 
+    display: none; 
     flex-direction: column;
     position: relative;
     gap:15px;
@@ -24,19 +28,6 @@ body{
     background-color: rgba(255, 255, 255, 0.4);
     border-radius: 5px;
     width: 400px;
-}
-
-.title-container{
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    position: absolute;
-    text-align: right;
-    width: 100%;
-    font-size: 10px;
-    top: 5px;
-    right: 5px;
-    color: #747474;
 }
 
 .title {
@@ -81,6 +72,10 @@ body{
     background-image: url('../img/icon-humidity.svg');
 }
 
+.current-formatted-date {
+    margin-left: 5px;
+}
+
 .humidity span {
     color: #3194d6;
     margin-left: 5px;
@@ -92,7 +87,15 @@ body{
 }
 
 .graph-container{
+    display: none;
     position: relative;
+}
+
+.graph {
+    min-height: 400px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    padding: 20px;
 }
 
 .buttons {
@@ -140,10 +143,29 @@ button.update-graph-btn{
     border-left: 1px solid #b5c3d9;
 }
 
-.update-info{
+.info-last-update, .info-graph-update {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+   
+}
+
+.info-text {
+    font-size: 10px;
+    color: #747474;
+}
+
+.update-info {
+    display: none;
+}
+
+.info-graph {
+    display: none;
     position: absolute;
     bottom: 5px;
-    left: 10px;
+    right: 5px;
     font-size: 10px;
     color: #747474;
 }
@@ -153,7 +175,7 @@ button.update-graph-btn{
     margin: 0 auto;
     width: 30px;
     height: 30px;
-    border: 6px solid #f3f4f6;
+    border: 6px solid #cacaca;
     border-top: 6px solid #ef4704;
     border-radius: 50%;
     animation: infyways-loader-spin 1000ms linear infinite;
@@ -164,10 +186,11 @@ button.update-graph-btn{
   100% { transform: rotate(360deg); }
 }
 
-/*progress-loader*/
-.progress-loader {
+/*progress-last-loader, progress-graph-loader*/
+.progress-last-loader, .progress-graph-loader {
     width: 16px;
     height: 16px;
+    margin-left: 5px;
     border-radius: 50%;
     background: conic-gradient(#f08155 0%, #e0e0e0 0%);
     position: relative;
@@ -176,13 +199,17 @@ button.update-graph-btn{
     justify-content: center;
 }
 
-.progress-loader::before {
+.progress-last-loader::before, .progress-graph-loader::before {
     content: '';
     position: absolute;
     width: 10px;
     height: 10px;
     border-radius: 50%;
     background: #e9f1fb;
+}
+
+.progress-graph-loader::before {
+    background: #f8f2f6;
 }
 
 .progress {
@@ -191,38 +218,13 @@ button.update-graph-btn{
     color: #f08155;
 }
 
-/*progress-loader*/
-.progress-graph-loader {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: conic-gradient(#f08155 0%, #e0e0e0 0%);
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.progress-graph-loader::before {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #e9f1fb;
-}
-
-.graph-progress {
+.progress {
     position: absolute;
     font-size: 14px;
     color: #f08155;
 }
 
 /* для графика */
-
-.main-svg {
-    border-radius: 10px;
-}
 
 .plotly-notifier {
     display: none;

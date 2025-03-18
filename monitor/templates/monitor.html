@@ -8,7 +8,7 @@
         <script src="{% static 'js/plotly-3.0.1.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-        <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+        <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
     </head>
     <body>
         <div class="header">
@@ -17,22 +17,22 @@
         <div class="main">
             <div class="data-container">
                 <div class="loader"></div>
-
-                {% comment %} {% if data_all %}
-                <div id="data-container">
-                    <p>
-                        Дата: <span id="date">{{ data_all.last.created_at }}</span> | Температура:
-                        <span id="temperature">{{ data_all.last.temperature }}</span>°C | Влажность:
-                        <span id="humidity">{{ data_all.last.humidity }}</span>%
-                    </p>
+                <div class="data-last">
+                    <div class="info-last-update">
+                        <div class="info-text">Last sensor measurement</div>
+                        <div class="progress-last-loader"></div>
+                    </div>
+                    <div class="date">
+                        Date and time: <span class="current-formatted-date"></span>
+                    </div>
+                    <div class="humidity">
+                        Current humidity:<span class="current-humidity"></span>
+                    </div>
+                    <div class="temperature">
+                        Current temperature:<span class="current-temperature"></span>
+                    </div>
                 </div>
-                {% else %}
-                <p>Данных нет</p>
-                {% endif %} {% endcomment %}
             </div>
-
-            <!-- Блок для графика -->
-
             <div class="graph-container">
                 <div class="buttons">
                     <div class="hour-btn-container">
@@ -42,18 +42,16 @@
                     <button class="day-btn">24 hours</button>
                     <button class="week-btn">1 week</button>
                 </div>
-                {% comment %}
-                <div class="progress-loader-graph">update</div>
-                {% endcomment %}
                 <div class="graph"></div>
-                <div class="update-info"></div>
+                <div class="info-graph-update">
+                    <div class="info-text">Updated graph</div>
+                    <div class="progress-graph-loader"></div>
+                </div>
+                <div class="info-graph">
+                    <div class="info-text">Data is added every 5 min.</div>
+                </div>
             </div>
-
-            {% comment %}
-            <div id="graph-container">{{ graph_html|safe }}</div>
-            {% endcomment %}
         </div>
-
         <script>
             const WS_DATA_URL = '{{ WS_DATA_URL }}';
         </script>

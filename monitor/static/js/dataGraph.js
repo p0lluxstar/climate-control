@@ -1,10 +1,16 @@
+import { startProgressLoader, stopProgressLoader } from './startProgressLoader.js';
+
 // Функция для обновления графика
-const dataContainer = document.querySelector('.data-container');
+const graphContainer = document.querySelector('.graph-container');
 const horuBtn = document.querySelector('.hour-btn');
 const dayBtn = document.querySelector('.day-btn');
 const weekBtn = document.querySelector('.week-btn');
+const graph = document.querySelector('.graph');
 const updateGraphBtn = document.querySelector('.update-graph-btn');
-const updateInfo = document.querySelector('.update-info');
+const infoGraphUpdate = document.querySelector('.info-graph-update');
+const infoGraph = document.querySelector('.info-graph');
+const buttons = document.querySelector('.buttons');
+const progressGraphLoader = document.querySelector('.progress-graph-loader');
 
 document.addEventListener('DOMContentLoaded', function () {
     horuBtn.addEventListener('click', () => updateGraphData('hour'));
@@ -14,16 +20,21 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 export async function updateGraphData(interval = 'hour') {
-    const graphContainer = document.querySelector('.graph-container');
-    const graph = document.querySelector('.graph');
-    const buttons = document.querySelector('.buttons');
-    const showText = interval === 'hour';
+    stopProgressLoader(progressGraphLoader);
 
+    const showText = interval === 'hour';
     horuBtn.classList.toggle('active', interval === 'hour');
     dayBtn.classList.toggle('active', interval === 'day');
     weekBtn.classList.toggle('active', interval === 'week');
 
-    updateInfo.innerHTML = `Autoupdated every 5 min.`;
+    if (interval !== 'hour') {
+        infoGraphUpdate.style.display = 'none';
+        stopProgressLoader(progressGraphLoader);
+    }
+
+    graphContainer.style.display = 'block';
+    graph.innerHTML = `<div class="loader"></div>`;
+    infoGraph.style.display = 'block';
 
     const url = `/api/${interval}`;
 
@@ -36,6 +47,11 @@ export async function updateGraphData(interval = 'hour') {
         buttons.style.gap = '7px';
         buttons.style.position = 'absolute';
         buttons.style.background = 'none';
+
+        if (interval === 'hour') {
+            infoGraphUpdate.style.display = 'flex';
+            startProgressLoader(updateGraphData, progressGraphLoader, 60000);
+        }
 
         if (data.no_data) {
             buttons.style.position = 'static';
@@ -117,7 +133,13 @@ export async function updateGraphData(interval = 'hour') {
                 },
                 dragmode: false,
                 plot_bgcolor: 'rgba(247, 247, 247, 0.5)',
-                paper_bgcolor: 'rgba(255, 255, 255, 0.4)',
+                paper_bgcolor: 'rgba(255, 255, 255, 0)',
+                margin: {
+                    t: 0,
+                    l: 50,
+                    r: 50,
+                    b: 50,
+                },
             },
             {
                 displayModeBar: false, // Отключаем панель инструментов
@@ -126,6 +148,7 @@ export async function updateGraphData(interval = 'hour') {
             }
         );
     } catch (error) {
-        console.error('Ошибка при получении данных:', error);
+        console.error('Error when receiving data:', error);
+        graphContainer.innerHTML = 'Error when receiving data.';
     }
 }
