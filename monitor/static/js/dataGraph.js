@@ -90,7 +90,11 @@ export async function updateGraphData(interval = 'hour') {
                     mode: showText ? 'lines+markers+text' : 'lines+text',
                     text: showText ? humidities.map((h) => `${h}%`) : [],
                     hoverinfo: 'none', // Показать дату, значение и подпись при наведении
-                    textposition: 'top', // Позиция текста
+                    textposition: 'bottom right', // Позиция текста
+                    textfont: {
+                        color: '#319fea',
+                        size: 12,
+                    },
                 },
                 {
                     x: dates,
@@ -100,7 +104,11 @@ export async function updateGraphData(interval = 'hour') {
                     mode: showText ? 'lines+markers+text' : 'lines+text',
                     text: showText ? temperatures.map((t) => `${t}°C`) : [],
                     hoverinfo: 'none',
-                    textposition: 'top',
+                    textposition: 'top left',
+                    textfont: {
+                        color: '#f65f80',
+                        size: 12,
+                    },
                 },
             ],
             {
@@ -116,11 +124,13 @@ export async function updateGraphData(interval = 'hour') {
                     fixedrange: true,
                 },
                 yaxis: {
-                    title: { text: 'Meaning', font: { size: 14, color: '#333', weight: 'bold' } },
-                    fixedrange: true,
-                    range: [10, 70],
-                    tickvals: [20, 30, 40, 50, 60],
-                    dtick: 10,
+                    title: { text: 'Value', font: { size: 14, color: '#333', weight: 'bold' } },
+                    autorange: false, // Выключаем автомасштабирование
+                    range: [
+                        Math.min(...temperatures, ...humidities) - 2, // Минимум -2
+                        Math.max(...temperatures, ...humidities) + 2, // Максимум +2
+                    ],
+                    tickprefix: ' ',
                 },
                 legend: {
                     x: 1,
