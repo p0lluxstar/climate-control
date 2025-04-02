@@ -5,9 +5,9 @@ import requests
 from django.core.mail import send_mail
 from django.conf import settings
 from dotenv import load_dotenv
-import sqlite3
+from django.utils import timezone
 from apscheduler.triggers.cron import CronTrigger
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 load_dotenv()
 
@@ -51,23 +51,14 @@ def getDataSensor():
 
 
 def deleteDataDB():
-    # Подключение к базе данных
-    conn = sqlite3.connect("db.sqlite3")
-    cursor = conn.cursor()
-
-    # Получаем текущую дату и вычитаем 8 дней
-    days_ago = (datetime.now() - timedelta(days=8)).strftime('%Y-%m-%d %H:%M:%S')
-
-    # Удаление записей старше 8 дней
-    cursor.execute("""
-        DELETE FROM monitor_climatedata 
-        WHERE created_at < ?
-    """, (days_ago,))
-
-    # Сохранение изменений и закрытие соединения
-    conn.commit()
-    conn.close()
-    print('Записи старше 8 дней удалены')
+    try:
+        cutoff_date = timezone.now() - timedelta(days=8)
+        deleted_count, _ = ClimateData.objects.filter(
+            created_at__lt=cutoff_date
+        ).delete()
+        print(f'Удалено {deleted_count} записей старше 8 дней')
+    except Exception as e:
+        print(f'Ошибка при удалении записей: {e}')
 
 
 # Инициализация планировщика
