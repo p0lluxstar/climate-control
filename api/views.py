@@ -19,7 +19,7 @@ def get_all_data(request):
             for data in all_data
         ]
     else:
-        return JsonResponse({'no_data': 'Нет данных'}, status=404)
+        return JsonResponse({'no_data': 'No data available'}, status=404)
 
     return JsonResponse(data_list, safe=False)
 
@@ -31,7 +31,7 @@ def get_month_data(request):
         created_at__gte=one_month_ago)  # Фильтруем записи за последний месяц
 
     if not recent_data.exists():
-        return JsonResponse({'no_data': 'Нет данных за последний месяц'}, status=404)
+        return JsonResponse({'no_data': 'There is no data for the last month'}, status=404)
 
     data_list = [
         {
@@ -52,7 +52,7 @@ def get_week_data(request):
         created_at__gte=one_week_ago)  # Фильтруем записи за последнюю неделю
 
     if not recent_data.exists():
-        return JsonResponse({'no_data': 'Нет данных за последнюю неделю'}, status=404)
+        return JsonResponse({'no_data': 'No data available for the last week'}, status=404)
 
     data_list = [
         {
@@ -73,7 +73,7 @@ def get_day_data(request):
         created_at__gte=one_day_ago)  # Фильтруем записи за последний день
 
     if not recent_data.exists():
-        return JsonResponse({'no_data': 'Нет данных за последний день'}, status=404)
+        return JsonResponse({'no_data': 'There is no data for the last day'}, status=404)
 
     data_list = [
         {

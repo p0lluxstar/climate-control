@@ -11,6 +11,7 @@ const infoGraphUpdate = document.querySelector('.info-graph-update');
 const infoGraph = document.querySelector('.info-graph');
 const buttons = document.querySelector('.buttons');
 const progressGraphLoader = document.querySelector('.progress-graph-loader');
+let currentResizeHandler = null;
 
 document.addEventListener('DOMContentLoaded', function () {
     horuBtn.addEventListener('click', () => updateGraphData('hour'));
@@ -20,6 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 export async function updateGraphData(interval = 'hour') {
+    // Удаляем предыдущий обработчик, если он есть
+    if (currentResizeHandler) {
+        window.removeEventListener('resize', currentResizeHandler);
+    }
+
     stopProgressLoader(progressGraphLoader);
 
     const showText = interval === 'hour';
@@ -54,8 +60,7 @@ export async function updateGraphData(interval = 'hour') {
         }
 
         if (data.no_data) {
-            buttons.style.position = 'static';
-            buttons.style.background = 'rgba(255, 255, 255, 0.5)';
+            buttons.style.position = 'absolute';
             graph.innerHTML = `<div class="error">${data.no_data}</div>`;
             return;
         }
@@ -79,84 +84,119 @@ export async function updateGraphData(interval = 'hour') {
         const temperatures = data.map((item) => item.temperature);
         const humidities = data.map((item) => item.humidity);
 
-        Plotly.react(
-            graph,
-            [
-                {
-                    x: dates,
-                    y: humidities,
-                    name: 'Humidity (%)',
-                    line: { color: '#319fea' },
-                    mode: showText ? 'lines+markers+text' : 'lines+text',
-                    text: showText ? humidities.map((h) => `${h}%`) : [],
-                    hoverinfo: 'none', // Показать дату, значение и подпись при наведении
-                    textposition: 'bottom right', // Позиция текста
-                    textfont: {
-                        color: '#319fea',
-                        size: 12,
+        function updateGraphFontSize() {
+            const screenWidth = window.innerWidth;
+            let fontSize = 12;
+            let narrowWith = true;
+
+            if (screenWidth < 600) narrowWith = false;
+            else if (screenWidth < 700) fontSize = 8;
+            else if (screenWidth < 900) fontSize = 10;
+
+            Plotly.react(
+                graph,
+                [
+                    {
+                        x: dates,
+                        y: humidities,
+                        name: 'Humidity (%)',
+                        line: { color: '#319fea' },
+                        mode: showText ? 'lines+markers+text' : 'lines+text',
+                        text: showText && narrowWith ? humidities.map((h) => `${h}%`) : [],
+                        hoverinfo: 'none', // Показать дату, значение и подпись при наведении
+                        textposition: 'top right', // Позиция текста 'bottom right'
+                        textfont: {
+                            color: '#1274b5',
+                            size: fontSize,
+                        },
+                        texttemplate:
+                            showText && narrowWith
+                                ? '<span style="text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;">%{text}</span>'
+                                : '',
                     },
-                },
-                {
-                    x: dates,
-                    y: temperatures,
-                    name: 'Temperature (°C)',
-                    line: { color: '#f65f80' },
-                    mode: showText ? 'lines+markers+text' : 'lines+text',
-                    text: showText ? temperatures.map((t) => `${t}°C`) : [],
-                    hoverinfo: 'none',
-                    textposition: 'top left',
-                    textfont: {
-                        color: '#f65f80',
-                        size: 12,
+                    {
+                        x: dates,
+                        y: temperatures,
+                        name: 'Temperature (°C)',
+                        line: { color: '#f65f80' },
+                        mode: showText ? 'lines+markers+text' : 'lines+text',
+                        text: showText && narrowWith ? temperatures.map((t) => `${t}°C`) : [],
+                        hoverinfo: 'none',
+                        textposition: 'top left', // 'top left'
+                        textfont: {
+                            color: '#d93f60',
+                            size: fontSize,
+                        },
+                        texttemplate:
+                            showText && narrowWith
+                                ? '<span style="text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;">%{text}</span>'
+                                : '',
                     },
-                },
-            ],
-            {
-                title: {
-                    text: 'Server room',
-                    font: { size: 20, color: '#333', weight: 'bold' },
-                },
-                xaxis: {
+                ],
+                {
                     title: {
-                        text: 'Date and time',
-                        font: { size: 14, color: '#333', weight: 'bold' },
+                        text: 'Server room',
+                        font: { size: 20, color: '#333', weight: 'bold' },
+                        y: 0.85,
                     },
-                    fixedrange: true,
+                    xaxis: {
+                        title: {
+                            text: 'Date and time',
+                            font: { size: 14, color: '#333', weight: 'bold' },
+                        },
+                        fixedrange: true,
+                    },
+                    yaxis: {
+                        title: { text: 'Value', font: { size: 14, color: '#333', weight: 'bold' } },
+                        autorange: false, // Выключаем автомасштабирование
+                        range: [
+                            Math.min(...temperatures, ...humidities) - 2, // Минимум -2
+                            Math.max(...temperatures, ...humidities) + 2, // Максимум +2
+                        ],
+                        tickprefix: ' ',
+                    },
+                    legend: {
+                        x: 1,
+                        y: 1.5,
+                        xanchor: 'right',
+                        yanchor: 'top',
+                        clickable: false,
+                        font: { family: 'Arial, sans-serif', size: 12, color: '#333' },
+                        bgcolor: 'rgba(247, 247, 247, 0.5)',
+                    },
+                    dragmode: false,
+                    plot_bgcolor: 'rgba(247, 247, 247, 0.5)',
+                    paper_bgcolor: 'rgba(255, 255, 255, 0)',
+                    margin: {
+                        t: 0,
+                        l: 50,
+                        r: 20,
+                        b: 50,
+                    },
+                    autosize: true,
                 },
-                yaxis: {
-                    title: { text: 'Value', font: { size: 14, color: '#333', weight: 'bold' } },
-                    autorange: false, // Выключаем автомасштабирование
-                    range: [
-                        Math.min(...temperatures, ...humidities) - 2, // Минимум -2
-                        Math.max(...temperatures, ...humidities) + 2, // Максимум +2
-                    ],
-                    tickprefix: ' ',
-                },
-                legend: {
-                    x: 1,
-                    y: 2,
-                    xanchor: 'right',
-                    yanchor: 'top',
-                    clickable: false,
-                    font: { family: 'Arial, sans-serif', size: 12, color: '#333' },
-                    bgcolor: 'rgba(247, 247, 247, 0.5)',
-                },
-                dragmode: false,
-                plot_bgcolor: 'rgba(247, 247, 247, 0.5)',
-                paper_bgcolor: 'rgba(255, 255, 255, 0)',
-                margin: {
-                    t: 0,
-                    l: 50,
-                    r: 50,
-                    b: 50,
-                },
-            },
-            {
-                displayModeBar: false, // Отключаем панель инструментов
-                legendItemClick: false, // Отключает клики по легенде
-                legendItemDoubleClick: false, // Отключает двойной клик по легенде
-            }
-        );
+                {
+                    displayModeBar: false, // Отключаем панель инструментов
+                    legendItemClick: false, // Отключает клики по легенде
+                    legendItemDoubleClick: false, // Отключает двойной клик по легенде
+                    responsive: true,
+                }
+            );
+        }
+
+        updateGraphFontSize();
+
+        function debounce(func, timeout = 50) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, args), timeout);
+            };
+        }
+
+        // Сохраняем ссылку на обработчик и добавляем его
+        currentResizeHandler = debounce(updateGraphFontSize);
+        window.addEventListener('resize', currentResizeHandler);
     } catch (error) {
         console.error('Error when receiving data:', error);
         graphContainer.innerHTML = 'Error when receiving data.';
