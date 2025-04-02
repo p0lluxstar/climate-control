@@ -1,10 +1,3 @@
-from apscheduler.triggers.cron import CronTrigger
-from datetime import timedelta
-from django.utils import timezone
-from django.core.mail import send_mail
-from apscheduler.schedulers.background import BackgroundScheduler
-import requests
-from monitor.models import ClimateData
 import os
 import sys
 import time
@@ -23,12 +16,19 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'base.settings')
 django.setup()
 
 # 4. Только теперь импортируем модели и другие зависимости
+from monitor.models import ClimateData
+import requests
+from apscheduler.schedulers.background import BackgroundScheduler
+from django.core.mail import send_mail
+from django.utils import timezone
+from datetime import timedelta
+from apscheduler.triggers.cron import CronTrigger
 
 
 def getDataSensor():
-    # print('запись в бд')
+    #print('запись в бд')
     try:
-        response = requests.get('http://192.168.22.178:80', timeout=5)
+        response = requests.get(os.getenv('WS_DATA_URL'), timeout=5)
         response.raise_for_status()
         data = response.json()
 
@@ -61,7 +61,6 @@ def getDataSensor():
     except requests.RequestException as e:
         print(f"Ошибка при получении данных: {e}")
 
-
 def deleteDataDB():
     try:
         cutoff_date = timezone.now() - timedelta(days=8)
@@ -72,15 +71,13 @@ def deleteDataDB():
     except Exception as e:
         print(f'Ошибка при удалении записей: {e}')
 
-
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()
     scheduler.add_job(getDataSensor, 'interval', seconds=300)
-    scheduler.add_job(deleteDataDB, trigger=CronTrigger(
-        hour=3, minute=10)),  # 03:00:00
+    scheduler.add_job(deleteDataDB, trigger=CronTrigger(hour=3, minute=10)),  # 03:00:00
     scheduler.start()
     print("Планировщик запущен. Нажмите Ctrl+C для остановки.")
-
+    
     try:
         while True:
             time.sleep(1)

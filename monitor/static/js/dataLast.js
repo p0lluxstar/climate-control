@@ -33,6 +33,6 @@ export async function updateLastData() {
         startProgressLoader(updateLastData, progressLastLoader, 3000);
     } catch (error) {
         console.error('Error when receiving data:', error);
-        dataContainer.innerHTML = `Error when receiving data.`;
+        dataContainer.innerHTML = `Error when receiving data, in the data-last block`;
     }
 }

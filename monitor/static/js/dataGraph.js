@@ -161,16 +161,15 @@ export async function updateGraphData(interval = 'hour') {
                         xanchor: 'right',
                         yanchor: 'top',
                         clickable: false,
-                        font: { family: 'Arial, sans-serif', size: 12, color: '#333' },
-                        bgcolor: 'rgba(247, 247, 247, 0.5)',
+                        font: { family: 'Arial, sans-serif', size: 12, color: '#333' },             
                     },
                     dragmode: false,
-                    plot_bgcolor: 'rgba(247, 247, 247, 0.5)',
+                    plot_bgcolor: 'rgba(247, 247, 247, 0.4)',
                     paper_bgcolor: 'rgba(255, 255, 255, 0)',
                     margin: {
                         t: 0,
                         l: 50,
-                        r: 20,
+                        r: 5,
                         b: 50,
                     },
                     autosize: true,
@@ -180,6 +179,7 @@ export async function updateGraphData(interval = 'hour') {
                     legendItemClick: false, // Отключает клики по легенде
                     legendItemDoubleClick: false, // Отключает двойной клик по легенде
                     responsive: true,
+                    staticPlot: true
                 }
             );
         }
@@ -199,6 +199,6 @@ export async function updateGraphData(interval = 'hour') {
         window.addEventListener('resize', currentResizeHandler);
     } catch (error) {
         console.error('Error when receiving data:', error);
-        graphContainer.innerHTML = 'Error when receiving data.';
+        graphContainer.innerHTML = 'Error when receiving data, in the graph block';
     }
 }

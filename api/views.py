@@ -94,7 +94,7 @@ def get_hour_data(request):
         created_at__gte=one_hour_ago)  # Фильтруем записи
 
     if not recent_data.exists():
-        return JsonResponse({'no_data': 'Нет данных за последний час'}, status=404)
+        return JsonResponse({'no_data': 'No data available for the last hour'}, status=404)
 
     data_list = [
         {
@@ -119,6 +119,6 @@ def get_latest_data(request):
             'humidity': latest_data.humidity
         }]
     else:
-        return JsonResponse({'no_data': 'Нет данных'}, status=404)
+        return JsonResponse({'no_data': 'No data available'}, status=404)
 
     return JsonResponse(data_list, safe=False)
