@@ -179,7 +179,7 @@ export async function updateGraphData(interval = 'hour') {
                     legendItemClick: false, // Отключает клики по легенде
                     legendItemDoubleClick: false, // Отключает двойной клик по легенде
                     responsive: true,
-                    staticPlot: true
+                    staticPlot: true // отключает интерактивность с графиком
                 }
             );
         }

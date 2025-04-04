@@ -5,7 +5,10 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Climate Control</title>
+        {% comment %}
         <script src="{% static 'js/plotly-3.0.1.min.js' %}"></script>
+        {% endcomment %}
+        <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
         <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
         <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
@@ -52,8 +55,12 @@
                 </div>
             </div>
         </div>
+        <div class="warning-container">
+            <div class="warning-messege"></div>
+        </div>
         <script>
             const WS_DATA_URL = '{{ WS_DATA_URL }}';
+            const MAX_TEMPERATURE = {{ MAX_TEMPERATURE|safe }};
         </script>
         <script type="module" src="{% static 'js/main.js' %}"></script>
     </body>
