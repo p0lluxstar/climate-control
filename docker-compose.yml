@@ -3,7 +3,7 @@ version: '3.8'
 services:
     app:
         build: .
-        container_name: climate_control_app
+        container_name: climate_control_app2
         ports:
             - '${WS_PORT}:${WS_PORT}'
             - '${FRONTEND_PORT}:${FRONTEND_PORT}'
@@ -13,3 +13,4 @@ services:
             - DEBUG=True
             - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
         command: sh -c "python manage.py runserver --noreload 0.0.0.0:8000 & python web-server/ws.py"
+        restart: always
